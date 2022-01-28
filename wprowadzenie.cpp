@@ -11,6 +11,13 @@ public:
        numbers(new value_type[max_size]) {
     }
 
+    NumbersContainer(NumbersContainer &&other)
+     : max_size(other.max_size),
+       count(other.count),
+       numbers(other.numbers) {
+           other.numbers = nullptr;
+    }
+
     /* remember of rule of three/five */
     // ...
 
@@ -40,6 +47,11 @@ private:
     value_type *numbers;
 };
 
+NumbersContainer&&
+my_move(NumbersContainer &other) {
+    return static_cast<NumbersContainer&&>(other);
+}
+
 int main() {
     NumbersContainer containerA(10);
 
@@ -48,6 +60,16 @@ int main() {
     containerA.add(2);
 
     containerA.print_content();
+
+    NumbersContainer &container_ref = static_cast<NumbersContainer&>(containerA);
+    container_ref.add(4);
+
+    containerA.print_content();
+
+
+    NumbersContainer containerB(my_move(containerA));
+
+    containerB.print_content();
 
     return 0;
 }
